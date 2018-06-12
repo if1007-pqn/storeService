@@ -1,0 +1,5 @@
+spring:
+  data.mongodb:   
+    uri: mongodb://bruno:golpinho11@ds149501.mlab.com:49501/pqn
+    
+

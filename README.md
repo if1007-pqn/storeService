@@ -1,4 +1,8 @@
 # store_service
+a store microservice with mongo
+
+### running
+<pre> ./gradlew run </pre>
 
 ### docs/api
 
