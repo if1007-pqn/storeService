@@ -12,16 +12,20 @@ public class StoreService {
     @Autowired
     private StoreRepository storeRepository;
  
-    public void save(String username, String password, List<Level> levels) {
+    public void createAndSave(String username, String password, List<Level> levels) {
         storeRepository.save(new Store(username, password, levels));
     }
  
+    public void save(Store store) {
+        storeRepository.save(store);
+    }
+
     public List<Store> findAll() {
        return storeRepository.findAll();
     }
  
-    public List<Store> findByUsername() {
-        return storeRepository.findByUsername();
+    public List<Store> findByUsername(String username) {
+        return storeRepository.findByUsername(username);
     }
 
     public long count() {
