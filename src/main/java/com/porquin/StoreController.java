@@ -87,10 +87,13 @@ public class StoreController {
         @RequestHeader(name = "token", required = true) String token, 
         @RequestBody List<Level> levels
     ) {
-        updateLevels(token, levels);
+        Store s = verifyTokenStore(token);
+        s.setLevels(levels);
+        storeService.save(s);
     }
 
-    public void updateLevels(String token, List<Level> levels) {
+    public Store verifyTokenStore(String token) {
+        /** if token is correct return the matching store */
         try {
             Claims t = JWTUtil.decode(token).getBody();
             if (!t.getAudience().equals("store")
@@ -101,28 +104,22 @@ public class StoreController {
             if (l.size() <= 0)
                 throw new TokenInvalidException();
 
-            Store s = l.get(0);
-            s.setLevels(levels);
-            storeService.save(s);
-            
+            return l.get(0);
         } catch (MalformedJwtException e) {
             throw new TokenInvalidException();
         } catch (SignatureException e) {
             throw new TokenInvalidException();
         }
-        
     }
 
-    /** Diz qual deve ser a porcentagem de volta para uma compra */
-    @RequestMapping(value = "/percent", method = RequestMethod.GET)
+    /** Diz os levels da loja */
+    @RequestMapping(value = "/levels", method = RequestMethod.GET)
     @ResponseBody
-    public double d(
-        @RequestHeader(name = "token", required = true) String token,    
-        @RequestHeader(name = "cellphone", required = true) String phone,
-        @RequestHeader(name = "value", required = true) double value,
-        @RequestHeader(name = "discount", required = true) double discount
+    public List<Level> d(
+        @RequestHeader(name = "token", required = true) String token
     ) {
-        return 0;
+        Store s = verifyTokenStore(token);
+        return s.getLevels();
     }
 
 }
