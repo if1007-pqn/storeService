@@ -1,4 +1,4 @@
-package com.porquin;
+package com.porquin.model;
 
 public class Level {
     private double nextLevel;

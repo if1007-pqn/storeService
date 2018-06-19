@@ -1,13 +1,16 @@
-package com.porquin;
+package com.porquin.controller;
 
 import java.util.List;
 import java.util.Date;
 
-
-import com.porquin.exceptions.LoginInvalidException;
-import com.porquin.exceptions.UsernameInvalidException;
-import com.porquin.exceptions.TokenInvalidException;
+import com.porquin.db.StoreMongoService;
+import com.porquin.exception.LoginInvalidException;
+import com.porquin.exception.UsernameInvalidException;
+import com.porquin.model.Level;
+import com.porquin.model.Store;
+import com.porquin.exception.TokenInvalidException;
 import com.porquin.util.JWTUtil;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
+import io.swagger.annotations.ApiOperation;
 
 import org.springframework.http.MediaType;
 import org.mindrot.jbcrypt.BCrypt;
@@ -30,10 +34,11 @@ public class StoreController {
 
     private static final int salts = 12;
 	@Autowired
-    private StoreService storeService; //tem que ser atributo de classe
+    private StoreMongoService storeService; //tem que ser atributo de classe
 
-    /** Cria loja */
+
     @RequestMapping(value = "/store", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Create a store", notes = "Create a store")
     @ResponseBody
     public void a(
         @RequestHeader(name = "username", required = true) String username,
@@ -46,7 +51,7 @@ public class StoreController {
     public void createStore(String username, String password, List<Level> levels) {
         try {
             password = BCrypt.hashpw(password, BCrypt.gensalt(salts));
-            this.storeService.createAndSave(username, password, levels); //save in db
+            this.storeService.save(new Store(username, password, levels)); //save in db
         } catch (DuplicateKeyException e){
             throw new UsernameInvalidException();
         } catch (Exception e) {
@@ -57,8 +62,8 @@ public class StoreController {
     
 
 
-    /** Obtem token de uma loja */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @ApiOperation(value = "Get a store login token", notes = "Get a store login token")
     @ResponseBody
     public String b(
         @RequestHeader(name = "username", required = true) String username,
@@ -80,8 +85,9 @@ public class StoreController {
     }
 
 
-    /** atualiza levels de uma loja */
+
     @RequestMapping(value = "/levels", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Update levels of a store", notes = "Update levels of a store")
     @ResponseBody
     public void c(
         @RequestHeader(name = "token", required = true) String token, 
@@ -112,8 +118,8 @@ public class StoreController {
         }
     }
 
-    /** Diz os levels da loja */
     @RequestMapping(value = "/levels", method = RequestMethod.GET)
+    @ApiOperation(value = "Show levels of a store", notes = "Show the levels of a store")
     @ResponseBody
     public List<Level> d(
         @RequestHeader(name = "token", required = true) String token

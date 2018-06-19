@@ -1,4 +1,4 @@
-package com.porquin.exceptions;
+package com.porquin.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

@@ -1,4 +1,4 @@
-package com.porquin;
+package com.porquin.model;
 
 import java.util.List;
 import lombok.Getter;
