@@ -1,16 +1,18 @@
-package com.porquin.model;
+package com.service.store.model;
 
 public class Level {
     private double nextLevel;
     private double percent;
+    private double days;
 
-    public Level(double nextLevel, double percent) {
+    public Level(double nextLevel, double percent, double days) {
         this.nextLevel = nextLevel;
         this.percent = percent;
+        this.days = days;
     }
 
     public String toString() {
-        return this.nextLevel + " " + this.percent;
+        return this.nextLevel + " " + this.percent + " " + this.days;
     }
 
     /**
@@ -39,5 +41,12 @@ public class Level {
      */
     public void setNextLevel(double nextLevel) {
         this.nextLevel = nextLevel;
+    }
+
+    /**
+     * @return the days
+     */
+    public double getDays() {
+        return days;
     }
 }

@@ -1,4 +1,4 @@
-package com.porquin;
+package com.service.store;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

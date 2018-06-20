@@ -1,8 +1,8 @@
-package com.porquin.db;
+package com.service.store.db;
 
 import java.util.List;
 
-import com.porquin.model.Store;
+import com.service.store.model.Store;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

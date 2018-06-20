@@ -1,4 +1,4 @@
-package com.porquin.model;
+package com.service.store.model;
 
 import java.util.List;
 import lombok.Getter;
