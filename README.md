@@ -1,4 +1,4 @@
-# store_service
+# store service
 a store microservice with mongo
 
 ### running
