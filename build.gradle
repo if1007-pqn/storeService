@@ -42,7 +42,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web' //spring boot
     implementation 'org.springframework.boot:spring-boot-starter-actuator' //actuator
 
-
+	testImplementation 'com.google.code.gson:gson:2.8.5' //gson (request)
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'junit:junit:4.12'
 }
