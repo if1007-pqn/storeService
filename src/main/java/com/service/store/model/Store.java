@@ -18,11 +18,14 @@ public class Store {
     private String username;
 
     private String password;
+
+    private double oldDaysPurchases;
     private List<Level> levels;
 
-    public Store(String username, String password, List<Level> levels) {
+    public Store(String username, String password, double oldDaysPurchases, List<Level> levels) {
         this.username = username;
         this.password = password;
+        this.oldDaysPurchases = oldDaysPurchases;
         this.levels = levels;
     }
 
@@ -68,4 +71,10 @@ public class Store {
 		this.levels = levels;
 	}
 
+    /**
+     * @return the oldDaysPurchases
+     */
+    public double getOldDaysPurchases() {
+        return oldDaysPurchases;
+    }
 }

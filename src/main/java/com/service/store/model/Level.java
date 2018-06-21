@@ -3,16 +3,12 @@ package com.service.store.model;
 public class Level {
     private double nextLevel;
     private double percent;
-    private double days;
+    private double creditDays;
 
-    public Level(double nextLevel, double percent, double days) {
+    public Level(double nextLevel, double percent, double creditDays) {
         this.nextLevel = nextLevel;
         this.percent = percent;
-        this.days = days;
-    }
-
-    public String toString() {
-        return this.nextLevel + " " + this.percent + " " + this.days;
+        this.creditDays = creditDays;
     }
 
     /**
@@ -23,13 +19,6 @@ public class Level {
     }
 
     /**
-     * @param percent the percent to set
-     */
-    public void setPercent(double percent) {
-        this.percent = percent;
-    }
-
-    /**
      * @return the nextLevel
      */
     public double getNextLevel() {
@@ -37,16 +26,9 @@ public class Level {
     }
 
     /**
-     * @param nextLevel the nextLevel to set
+     * @return the creditDays
      */
-    public void setNextLevel(double nextLevel) {
-        this.nextLevel = nextLevel;
-    }
-
-    /**
-     * @return the days
-     */
-    public double getDays() {
-        return days;
+    public double getCreditDays() {
+        return creditDays;
     }
 }

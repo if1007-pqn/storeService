@@ -1,16 +1,15 @@
 package com.service.store.controller;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
 import com.service.store.db.StoreMongoService;
-import com.service.store.exception.LoginInvalidException;
-import com.service.store.exception.UsernameInvalidException;
-import com.service.store.json.PurchaseInfoJson;
+import com.service.store.exception.InvalidLoginException;
+import com.service.store.exception.InvalidTokenException;
+import com.service.store.exception.InvalidUsernameException;
+import com.service.store.json.GetLevelsJson;
 import com.service.store.model.Level;
 import com.service.store.model.Store;
-import com.service.store.exception.TokenInvalidException;
 import com.service.store.util.JWTUtil;
 
 
@@ -41,17 +40,18 @@ public class StoreController {
     public void a(
         @RequestHeader(name = "username", required = true) String username,
         @RequestHeader(name = "password", required = true) String password, 
+        @RequestHeader(name = "oldDaysPurchases", required = true) double oldDaysPurchases, 
         @RequestBody List<Level> levels
     ) {
-        createStore(username, password, levels);
+        createStore(username, password, oldDaysPurchases, levels);
     }
 
-    public void createStore(String username, String password, List<Level> levels) {
+    public void createStore(String username, String password, double oldDaysPurchases, List<Level> levels) {
         try {
             password = BCrypt.hashpw(password, BCrypt.gensalt(salts));
-            storeMongoService.save(new Store(username, password, levels)); //save in db
+            storeMongoService.save(new Store(username, password, oldDaysPurchases, levels)); //save in db
         } catch (DuplicateKeyException e){
-            throw new UsernameInvalidException();
+            throw new InvalidUsernameException();
         } catch (Exception e) {
             throw e;
         }
@@ -81,11 +81,11 @@ public class StoreController {
     public String login(String username, String password) {
         List<Store> l = storeMongoService.findByUsername(username);
         if (l.size() <= 0)
-            throw new LoginInvalidException();
+            throw new InvalidLoginException();
         Store s = l.get(0);
         
         if (!BCrypt.checkpw(password, s.getPassword()))
-            throw new LoginInvalidException();
+            throw new InvalidLoginException();
         
         return JWTUtil.create(s.getId(), "store");
     }
@@ -110,34 +110,21 @@ public class StoreController {
         String id = JWTUtil.getId(token, "store");
         Optional<Store> l = storeMongoService.findById(id);
         if (!l.isPresent())
-            throw new TokenInvalidException();
+            throw new InvalidTokenException();
 
         return l.get();
     
     }
 
-    @RequestMapping(value = "/purchaseinfo", method = RequestMethod.GET)
-    @ApiOperation(value = "Simulates a purchase", notes = "Returns a percent and date to expirate credits")
+
+    @RequestMapping(value = "/registerinfo", method = RequestMethod.GET)
+    @ApiOperation(value = "Infos to make a register", notes = "Get infos to register a purchase in the store")
     @ResponseBody
-    public PurchaseInfoJson d(
-        @RequestHeader(name = "token", required = true) String token,
-        @RequestHeader(name = "amount", required = true) double amount 
+    public GetLevelsJson g(
+        @RequestHeader(name = "token", required = true) String token
     ) {
         Store s = verifyTokenStore(token);
-        List<Level> ll = s.getLevels();
-        Level current = ll.get(0);
-        for (Level l : ll) {
-            current = l;
-            if (amount >= l.getNextLevel()) {
-                amount -= l.getNextLevel();
-            } else {
-                break;
-            }
-        }
-        Calendar calendar = Calendar.getInstance(); // gets a calendar using the default time zone and locale.
-        calendar.add(Calendar.SECOND, (int) current.getDays()*24*60*60);
-        return new PurchaseInfoJson(current.getPercent(), calendar.getTime() );
-
+        return new GetLevelsJson(s.getOldDaysPurchases(), s.getLevels());
     }
 
 }
