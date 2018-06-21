@@ -28,6 +28,7 @@ apply plugin: 'io.spring.dependency-management'
 // Define the main class for the application
 mainClassName = 'com.service.store.Application'
 
+
 dependencies {
     // This dependency is found on implementation classpath of this component and consumers.
     implementation 'org.mindrot:jbcrypt:0.4' //bcrypt password
