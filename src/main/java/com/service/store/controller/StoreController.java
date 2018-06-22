@@ -1,8 +1,11 @@
 package com.service.store.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.gson.Gson;
 import com.service.store.db.StoreMongoService;
 import com.service.store.exception.InvalidLoginException;
 import com.service.store.exception.InvalidTokenException;
@@ -34,6 +37,19 @@ public class StoreController {
     private StoreMongoService storeMongoService; //tem que ser atributo de classe
 
 
+    @RequestMapping(value = "/test", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Create a store", notes = "Create a store")
+    @ResponseBody
+    public List<Level> abc(
+        @RequestBody String lvls
+    ) {
+    	Gson gson = new Gson();
+    	Level[] lvels = gson.fromJson(lvls, Level[].class);
+        List<Level> levels = Arrays.asList(lvels);
+    	return levels;
+    }
+	
+	
     @RequestMapping(value = "/store", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a store", notes = "Create a store")
     @ResponseBody

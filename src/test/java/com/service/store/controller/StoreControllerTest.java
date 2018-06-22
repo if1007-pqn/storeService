@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,6 +36,8 @@ public class StoreControllerTest {
 	
 	@Autowired
 	private WebApplicationContext context;
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	private MockMvc mockMvc;
 	
@@ -59,7 +63,7 @@ public class StoreControllerTest {
 	
 	public void testLevels(String token) throws Exception {
 		String getLevelUrl = new StringBuilder()
-				.append("/levels").toString();
+				.append("/test").toString();
 		
 		ArrayList<Level> levels = new ArrayList<Level>();
 		
@@ -71,8 +75,8 @@ public class StoreControllerTest {
 		String jsonInString = gson.toJson(levels);
 		
 		
-		((ResultActions) ((MockHttpServletRequestBuilder) this.mockMvc.perform(put(getLevelUrl).header("token", token)
-				.contentType(MediaType.APPLICATION_JSON)))
+		this.mockMvc.perform(put(getLevelUrl).header("token", token)
+				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonInString))
 				.andDo(print())
 				.andExpect(status().isOk())
