@@ -34,28 +34,70 @@ public class StoreControllerTest {
 	@Autowired
 	private WebApplicationContext context;
 	
+	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	private MockMvc mockMvc;
+	
+	public String createStoreAndReturnToken() {
+		String newStoreUrl = "/store";
+		String token = "";
+		ArrayList<Level> levels = new ArrayList<Level>();
+		
+		for(int i = 0; i < 3; i++) {
+			levels.add(new Level(1000.0, 5.0-i, 10.0+i));
+		}
+		
+		Gson gson = new Gson();
+		String jsonInString = gson.toJson(levels);
+		
+		
+		try {
+			this.mockMvc.perform(post(newStoreUrl)
+					.header("username", "dstore").header("password", "opa13")
+					.header("oldDaysPurchases", 100.0)
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(jsonInString))
+					.andDo(print())
+					.andExpect(status().is2xxSuccessful())
+					.andReturn();
+			
+			//created store, now login to get token
+			MvcResult result = this.mockMvc.perform(get("/login").header("username", "dstore")
+					.header("password", "opa13")).andExpect(status().isOk())
+					.andDo(print()).andReturn();
+			
+			token = result.getResponse().getContentAsString();
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		return token;
+		
+		
+	}
+	
+	public void deleteStore(String token) throws Exception {
+		this.mockMvc.perform(delete("/store").header("token", token))
+			.andExpect(status().isOk());
+	}
 	
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
 	}
 	
+	/**
+	 * test for login on store preloaded & change levels
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testStore() throws Exception {
-		String getLoginUrl = new StringBuilder()
-				.append("/login").toString();
+			
 		
-		
-		MvcResult result = this.mockMvc.perform(get(getLoginUrl).header("username", "laroca")
-				.header("password", "larocastore")).andExpect(status().isOk())
-				.andDo(print()).andReturn();
-		
-		
-		String content = result.getResponse().getContentAsString();
-		testLevels(content);
+		String token = createStoreAndReturnToken();
+		testLevels(token);
 	}
 	
 	public void testLevels(String token) throws Exception {
@@ -65,7 +107,7 @@ public class StoreControllerTest {
 		ArrayList<Level> levels = new ArrayList<Level>();
 		
 		for(int i = 0; i < 3; i++) {
-			levels.add(new Level(1000.0, 5.0-i, 10.0+i));
+			levels.add(new Level(5700.0, 7.0-i, 14.0+i));
 		}
 		
 		Gson gson = new Gson();
@@ -79,7 +121,52 @@ public class StoreControllerTest {
 				.andExpect(status().isOk())
 				.andReturn();
 		
+		deleteStore(token);
 		
-				
 	}
+	
+	/**
+	 * test creation of new stores.
+	 * needs username, password, oldDaysPurchases (double) and levels
+	 * @throws Exception 
+	 */
+	@Test
+	public void testCreateStore() throws Exception {
+		String newStoreUrl = "/store";
+		
+		ArrayList<Level> levels = new ArrayList<Level>();
+		
+		for(int i = 0; i < 3; i++) {
+			levels.add(new Level(1000.0, 5.0-i, 10.0+i));
+		}
+		
+		Gson gson = new Gson();
+		String jsonInString = gson.toJson(levels);
+		
+		
+		this.mockMvc.perform(post(newStoreUrl)
+				.header("username", "dstore").header("password", "opa13")
+				.header("oldDaysPurchases", 100.0)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonInString))
+				.andDo(print())
+				.andExpect(status().is2xxSuccessful())
+				.andReturn();
+	}
+	
+	/**
+	 * testing info for registers (purchases in store)
+	 * @throws Exception 
+	 * 
+	 */
+	@Test
+	public void testRegisterInfo() throws Exception {
+		String token = createStoreAndReturnToken();
+		
+		this.mockMvc.perform(get("/registerinfo").header("token", token))
+			.andExpect(status().isOk()).andReturn();
+		
+		deleteStore(token);
+	}
+	
 }
