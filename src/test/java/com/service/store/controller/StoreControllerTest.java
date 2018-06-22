@@ -118,7 +118,7 @@ public class StoreControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonInString))
 				.andDo(print())
-				.andExpect(status().is4xxClientError())
+				.andExpect(status().is2xxSuccessful())
 				.andReturn();
 		
 		deleteStore(token);
