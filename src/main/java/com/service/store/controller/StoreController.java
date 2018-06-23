@@ -1,16 +1,15 @@
 package com.service.store.controller;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import com.google.gson.Gson;
 import com.service.store.db.StoreMongoService;
 import com.service.store.exception.InvalidLoginException;
 import com.service.store.exception.InvalidTokenException;
 import com.service.store.exception.InvalidUsernameException;
 import com.service.store.json.GetLevelsJson;
+import com.service.store.json.Json;
 import com.service.store.model.Level;
 import com.service.store.model.Store;
 import com.service.store.util.JWTUtil;
@@ -35,20 +34,7 @@ public class StoreController {
     private static final int salts = 12;
 	@Autowired
     private StoreMongoService storeMongoService; //tem que ser atributo de classe
-
-
-    @RequestMapping(value = "/test", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Create a store", notes = "Create a store")
-    @ResponseBody
-    public List<Level> abc(
-        @RequestBody String lvls
-    ) {
-    	Gson gson = new Gson();
-    	Level[] lvels = gson.fromJson(lvls, Level[].class);
-        List<Level> levels = Arrays.asList(lvels);
-    	return levels;
-    }
-	
+    private Json<Level[]> jsonLevel = new Json<Level[]>(Level[].class);
 	
     @RequestMapping(value = "/store", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a store", notes = "Create a store")
@@ -57,8 +43,9 @@ public class StoreController {
         @RequestHeader(name = "username", required = true) String username,
         @RequestHeader(name = "password", required = true) String password, 
         @RequestHeader(name = "oldDaysPurchases", required = true) double oldDaysPurchases, 
-        @RequestBody List<Level> levels
+        @RequestBody String lvls
     ) {
+        List<Level> levels = Arrays.asList(jsonLevel.fromJson(lvls));
         createStore(username, password, oldDaysPurchases, levels);
     }
 
@@ -113,8 +100,9 @@ public class StoreController {
     @ResponseBody
     public void c(
         @RequestHeader(name = "token", required = true) String token, 
-        @RequestBody List<Level> levels
+        @RequestBody String lvls
     ) {
+        List<Level> levels = Arrays.asList(jsonLevel.fromJson(lvls));
         Store s = verifyTokenStore(token);
         s.setLevels(levels);
         storeMongoService.save(s);
