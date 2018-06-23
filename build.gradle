@@ -33,7 +33,7 @@ dependencies {
     // This dependency is found on implementation classpath of this component and consumers.
     implementation 'org.mindrot:jbcrypt:0.4' //bcrypt password
     implementation 'io.jsonwebtoken:jjwt:0.7.0' //jwt token
-	implementation 'com.google.code.gson:gson:2.8.5' //gson (request)
+    implementation 'com.google.code.gson:gson:2.8.5' //gson (request)
 
     implementation 'org.projectlombok:lombok:1.18.0' //getter model
     implementation 'io.springfox:springfox-swagger2:2.8.0'  //swagger core
