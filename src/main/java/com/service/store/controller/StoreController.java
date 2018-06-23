@@ -35,7 +35,6 @@ public class StoreController {
     @Autowired
     private ApplicationConfig config;
 
-    private static final int salts = 12;
 	@Autowired
     private StoreMongoService storeMongoService; //tem que ser atributo de classe
     private Json<Level[]> jsonLevel = new Json<Level[]>(Level[].class);
@@ -55,7 +54,7 @@ public class StoreController {
 
     public void createStore(String username, String password, double oldDaysPurchases, List<Level> levels) {
         try {
-            password = BCrypt.hashpw(password, BCrypt.gensalt(salts));
+            password = BCrypt.hashpw(password, BCrypt.gensalt(config.getBcryptSalts()));
             storeMongoService.save(new Store(username, password, oldDaysPurchases, levels)); //save in db
         } catch (DuplicateKeyException e){
             throw new InvalidUsernameException();

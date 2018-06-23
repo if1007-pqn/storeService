@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ApplicationConfig {
 
     private String tokenKey;
+    private int bcryptSalts;
 
     /**
      * @return the tokenKey
@@ -20,5 +21,19 @@ public class ApplicationConfig {
      */
     public void setTokenKey(String tokenKey) {
         this.tokenKey = tokenKey;
+    }
+
+    /**
+     * @return the bcryptSalts
+     */
+    public int getBcryptSalts() {
+        return bcryptSalts;
+    }
+
+    /**
+     * @param bcryptSalts the bcryptSalts to set
+     */
+    public void setBcryptSalts(int bcryptSalts) {
+        this.bcryptSalts = bcryptSalts;
     }
 }
