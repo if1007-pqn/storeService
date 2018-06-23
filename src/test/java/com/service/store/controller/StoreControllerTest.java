@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.service.store.Application;
+import com.service.store.db.StoreMongoRepository;
 import com.service.store.model.Level;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,7 +34,14 @@ public class StoreControllerTest {
 	
 	@Autowired
 	private WebApplicationContext context;
-	
+    
+    @Autowired
+    private StoreMongoRepository storeMongoRepository;
+
+    private void dropDB() {
+        /** remove all of db */
+        storeMongoRepository.deleteAll();
+    }
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
