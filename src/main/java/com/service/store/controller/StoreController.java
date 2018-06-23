@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.service.store.ApplicationConfig;
 import com.service.store.db.StoreMongoService;
 import com.service.store.exception.InvalidLoginException;
 import com.service.store.exception.InvalidTokenException;
@@ -31,11 +32,14 @@ import org.mindrot.jbcrypt.BCrypt;
 @Controller
 public class StoreController {
 
+    @Autowired
+    private ApplicationConfig config;
+
     private static final int salts = 12;
 	@Autowired
     private StoreMongoService storeMongoService; //tem que ser atributo de classe
     private Json<Level[]> jsonLevel = new Json<Level[]>(Level[].class);
-	
+
     @RequestMapping(value = "/store", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a store", notes = "Create a store")
     @ResponseBody
@@ -90,7 +94,7 @@ public class StoreController {
         if (!BCrypt.checkpw(password, s.getPassword()))
             throw new InvalidLoginException();
         
-        return JWTUtil.create(s.getId(), "store");
+        return JWTUtil.create(config.getTokenKey(), s.getId(), "store");
     }
 
 
@@ -111,7 +115,7 @@ public class StoreController {
     public Store verifyTokenStore(String token) {
         /** if token is correct return the matching store */
         
-        String id = JWTUtil.getId(token, "store");
+        String id = JWTUtil.getId(config.getTokenKey(), token, "store");
         Optional<Store> l = storeMongoService.findById(id);
         if (!l.isPresent())
             throw new InvalidTokenException();
