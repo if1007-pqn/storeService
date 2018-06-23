@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.service.store.Application;
+import com.service.store.db.StoreMongoService;
 import com.service.store.model.Level;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,7 +35,13 @@ public class StoreControllerTest {
 	
 	@Autowired
 	private WebApplicationContext context;
-	
+    
+    @Autowired
+    private StoreMongoService storeMongoService;
+
+    private void dropDB() {
+        storeMongoService.deleteAll();
+    }
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
@@ -84,7 +92,7 @@ public class StoreControllerTest {
 	
 	@Before
 	public void setup() {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
 	}
 	
 	/**
@@ -93,8 +101,8 @@ public class StoreControllerTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void testStore() throws Exception {
-			
+	public void testUpdateLevels() throws Exception {
+		this.dropDB();
 		
 		String token = createStoreAndReturnToken();
 		testLevels(token);
@@ -118,10 +126,10 @@ public class StoreControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonInString))
 				.andDo(print())
-				.andExpect(status().is4xxClientError())
+				.andExpect(status().isOk())
 				.andReturn();
 		
-		deleteStore(token);
+		// deleteStore(token);
 		
 	}
 	
@@ -131,7 +139,8 @@ public class StoreControllerTest {
 	 * @throws Exception 
 	 */
 	@Test
-	public void testCreateStore() throws Exception {
+	public void testCreateAndRemoveStore() throws Exception {
+        this.dropDB();
 		String newStoreUrl = "/store";
 		
 		ArrayList<Level> levels = new ArrayList<Level>();
@@ -153,7 +162,7 @@ public class StoreControllerTest {
 				.andExpect(status().is2xxSuccessful())
 				.andReturn();
 		
-		//login to delete store
+		// login to delete store
 		MvcResult result = this.mockMvc.perform(get("/login").header("username", "pqnstore")
 				.header("password", "porquin")).andExpect(status().isOk())
 				.andDo(print()).andReturn();
@@ -170,12 +179,17 @@ public class StoreControllerTest {
 	 */
 	@Test
 	public void testRegisterInfo() throws Exception {
+        this.dropDB();
 		String token = createStoreAndReturnToken();
 		
 		this.mockMvc.perform(get("/registerinfo").header("token", token))
 			.andExpect(status().isOk()).andReturn();
 		
-		deleteStore(token);
+		// deleteStore(token);
 	}
-	
+    
+    @After
+    public void after() {
+        this.dropDB();
+    }
 }

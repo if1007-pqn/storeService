@@ -37,5 +37,9 @@ public class StoreMongoService {
     public void delete(String id) {
         repository.deleteById(id);
     }
+
+    public void deleteAll() {
+        repository.deleteAll();
+    }
  
 }
