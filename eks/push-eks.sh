@@ -12,7 +12,7 @@ if [ ! -e ~/.aws/credentials ]; then
 fi
 
 cd $local
-docker build .. -t storeservice --build-arg LOGSERVICE_ADDRESS=$1
+docker build .. -t storeservice --build-arg LOG_ADDR="$1"
 docker login
 user=$(docker info | grep Username: | awk '{print $2}')
 docker tag storeservice $user/storeservice

@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+local="$(cd "$(dirname "$0")"; pwd)"
+cd "$local"
+
 function clean_mongo() {
     docker rm --force mongo 2>/dev/null >&2
 }

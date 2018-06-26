@@ -9,9 +9,9 @@ a store microservice over spring boot and mongo
 
 ## build and push to AWS EKS
 * this script requires account in docker hub:
-<pre> bash eks/push-eks.sh $ADDRESS_LOGSERVICE</pre>
+<pre> bash eks/push-eks.sh $LOGSERVICE_ADDR</pre>
 
-ADDRESS_LOGSERVICE is the logservice address, used to logstash and packetbeat in storeservice container, send the logs and metrics respectively.
+LOGSERVICE_ADDR is the logservice address (with port), used to logstash and packetbeat in storeservice container, send the logs and metrics respectively.
 
 
 ## docs/api
