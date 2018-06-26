@@ -8,3 +8,4 @@ build
 *.vscode
 *.sts*
 *.eclipse*
+rc.json

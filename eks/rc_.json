@@ -1,0 +1,37 @@
+{
+    "kind": "ReplicationController",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "storeservice",
+        "labels": {
+            "app": "storeservice"
+        }
+    },
+    "spec": {
+        "replicas": 3,
+        "selector": {
+            "app": "storeservice"
+        },
+        "template": {
+            "metadata": {
+                "labels": {
+                    "app": "storeservice"
+                }
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "name": "storeservice",
+                        "image": "wison27/storeservice",
+                        "ports": [
+                            {
+                                "name": "http-server",
+                                "containerPort": 8080
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}

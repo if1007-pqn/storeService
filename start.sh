@@ -2,7 +2,7 @@
 
 
 if [ $ENV = 'prod' ]; then
-    ./run-log.sh &
+    ./run-log.sh $LOGSERVICE_ADDRESS &
 fi
 
 if [ $ENV = 'test' ]; then 

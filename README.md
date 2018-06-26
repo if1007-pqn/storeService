@@ -1,13 +1,20 @@
 # store service
 a store microservice over spring boot and mongo
 
-### running the application
+## running only local application
 <pre> ./gradlew run </pre>
 
-### running tests
-<pre> ./gradlew test </pre>
+## running tests
+<pre> ./run-tests.sh </pre>
 
-### docs/api
+## build and push to AWS EKS
+* this script requires account in docker hub:
+<pre> bash eks/push-eks.sh $ADDRESS_LOGSERVICE</pre>
+
+ADDRESS_LOGSERVICE is the logservice address, used to logstash and packetbeat in storeservice container, send the logs and metrics respectively.
+
+
+## docs/api
 run the project and access the swagger page:
 <pre> GET /swagger-ui.html </pre>
 or

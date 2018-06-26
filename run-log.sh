@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-export ADDRESS_ELASTICSEARCH="a7093c43d78a811e8b1530e7f1a24d73-1303797126.us-east-1.elb.amazonaws.com:9200"
+export ADDRESS_ELASTICSEARCH="$1"
 
 curl -LO https://artifacts.elastic.co/downloads/beats/packetbeat/packetbeat-6.3.0-amd64.deb
 apt update ; apt-get install -y libpcap0.8
