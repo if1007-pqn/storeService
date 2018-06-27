@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 
-if [ $ENV = 'prod' ]; then
-    ./run-log.sh $LOG_ADDR &
+if [ "$ENV" = 'prod' ]; then
+    ./log.sh $LOG_ADDR &
 fi
 
-if [ $ENV = 'test' ]; then 
+if [ "$ENV" = 'test' ]; then 
     ./gradlew test
 else
     ./gradlew run

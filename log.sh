@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 export ADDRESS_ELASTICSEARCH="$1"
 
+if [ ! "$DOCKER" = 'docker' ]; then
+    echo 'Script feito para ser executado via docker'
+    exit 0
+fi
+
 curl -LO https://artifacts.elastic.co/downloads/beats/packetbeat/packetbeat-6.3.0-amd64.deb
 apt update ; apt-get install -y libpcap0.8
 apt install ./packetbeat-6.3.0-amd64.deb
 rm ./packetbeat-6.3.0-amd64.deb
-sed s/localhost:9200/${ADDRESS_ELASTICSEARCH:-logservice:9200}/ /etc/packetbeat/packetbeat.yml | tee /etc/packetbeat/packetbeat.yml
+sed s/localhost:9200/${ADDRESS_ELASTICSEARCH:-'logservice:9200'}/ /etc/packetbeat/packetbeat.yml > /tmp/packetbeat.yml; cp /tmp/packetbeat.yml /etc/packetbeat/packetbeat.yml
 
 curl -LO https://artifacts.elastic.co/downloads/logstash/logstash-6.3.0.zip
 unzip logstash-6.3.0.zip 
@@ -24,7 +29,7 @@ input {
 }
  
 filter {
-  #If log line contains tab character followed by 'at' then we will tag that entry as stacktrace
+  #If log line contains tab character followed by at then we will tag that entry as stacktrace
   if [message] =~ "\tat" {
     grok {
       match => ["message", "^(\tat)"]
@@ -54,7 +59,7 @@ output {
  
   # Sending properly parsed log events to elasticsearch
   elasticsearch {
-    hosts => ["'${ADDRESS_ELASTICSEARCH:-logservice:9200}'"]
+    hosts => ["'${ADDRESS_ELASTICSEARCH:-'logservice:9200'}'"]
   }
 }' > logstash.conf
 

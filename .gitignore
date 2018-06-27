@@ -9,3 +9,4 @@ build
 *.sts*
 *.eclipse*
 rc.json
+elk-store.log

@@ -1,10 +1,11 @@
 FROM openjdk:8u171-jdk-stretch
 
 ARG ENV=prod
-ARG LOG_ADDR=http://a91dbce7e78bc11e8b9110a405e61255-1646121970.us-east-1.elb.amazonaws.com:9200
+ARG LOG_ADDR
 
 ENV LOG_ADDR ${LOG_ADDR}
 ENV ENV ${ENV}
+ENV DOCKER docker
 ENV PORT 8080
 ENV PORT2 8081
 

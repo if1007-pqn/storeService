@@ -1,11 +1,16 @@
 # store service
 a store microservice over spring boot and mongo
 
-## running only local application
+## running only local application (dev)
 <pre> ./gradlew run </pre>
 
-## running tests
-<pre> ./run-tests.sh </pre>
+## running container local (prod)
+* used to test communication with logservice local, firstly run the run.sh of logservice, then do it:
+<pre> ./run.sh </pre>
+
+## running tests (test)
+<pre> ENV=test ./run.sh </pre>
+
 
 ## build and push to AWS EKS
 * this script requires account in docker hub:
